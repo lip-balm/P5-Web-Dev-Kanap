@@ -6,10 +6,9 @@ fetch('http://localhost:3000/api/products')
 // Get access to the DOM
 const itemsSection = document.getElementById('items');
 
-// Create elements for the products and set the content
+// Create elements for the products and set its contents
 function displayItems(product) {
     for (let i = 0; i < product.length; i++) {
-
         let productLink = document.createElement('a');
         let productArticle = document.createElement('article');
         let productImage = document.createElement('img');
@@ -22,12 +21,11 @@ function displayItems(product) {
         productHeading.textContent = product[i].name;
         productDescription.textContent = product[i].description;
         
-        // Append children to the products
+        // Append children to their respective parents
         productArticle.appendChild(productImage);
         productArticle.appendChild(productHeading);
         productArticle.appendChild(productDescription);
         productLink.appendChild(productArticle);
-
         itemsSection.appendChild(productLink);
     }
     let productArray = product[i];
