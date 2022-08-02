@@ -6,7 +6,7 @@ fetch('http://localhost:3000/api/products')
 // Get access to the DOM
 const itemsSection = document.getElementById('items');
 
-// Create elements for the products and set its contents
+// Create product elements, set its contents, and populate on the page
 function displayItems(product) {
     for (let i = 0; i < product.length; i++) {
         let productLink = document.createElement('a');
@@ -31,5 +31,3 @@ function displayItems(product) {
     let productArray = product[i];
     return productArray;
 }
-
-
