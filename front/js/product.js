@@ -18,8 +18,9 @@ const productPageDescription = document.getElementById('description');
 const productPageImageDiv = document.getElementsByClassName('item__img')[0];
 const productColors = document.getElementById('colors');
 const productQuantity = document.getElementById('quantity');
+const addToCartButton = document.getElementById('addToCart');
 
-// Content the each product page with respective information
+// Content each product page with its respective information
 function contentProductPages(product) {
     for (let i = 0; i < product.length; i++) {
         if (product[i]._id === pageID) {
@@ -38,7 +39,7 @@ function contentProductPages(product) {
     }
 }
 
-// Function for populating the color dropdown
+// Populating the color dropdown
 function colorSelection(colors) {
     console.log(colors);
     for(let i=0; i < colors.length; i++) {  
@@ -48,3 +49,50 @@ function colorSelection(colors) {
     productColors.appendChild(colorSelection);
     }
 }
+
+// Add to cart function
+function addToCart() {
+
+    // Object to hold the product details
+    let productSelection = {
+        productTitle: productTitle.textContent,
+        pageID: pageID,
+        selectedQuantity: productQuantity.value,
+        selectedColor: productColors.value,
+        productPrice: productPrice.textContent,
+    };
+    console.log(productSelection);
+
+    let currentCart = localStorage.getItem('cartProductsArray');
+    if (currentCart == null) {
+        cartProductsArray = [];
+    } else {
+        cartProductsArray = JSON.parse(currentCart);
+    }
+    console.log(cartProductsArray);
+
+    // Find if product exists in cart
+    const existingProduct = cartProductsArray.findIndex((newProduct) => newProduct.pageID == pageID && newProduct.selectedColor == productColors.value);
+    console.log(existingProduct);
+
+    // If cart is empty, add the product. If index is true, then increase the quantity.
+    if (cartProductsArray.length === 0) {
+        cartProductsArray.push(productSelection);
+        localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
+        console.log(cartProductsArray);
+
+    } else if (existingProduct >= 0) {
+        cartProductsArray[existingProduct].selectedQuantity = Number(productSelection.selectedQuantity) + Number(cartProductsArray[existingProduct].selectedQuantity); 
+        localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
+        console.log(existingProduct);
+
+    // If cart is not empty or product does not exist in cart, then add it to cart
+    } else {
+        cartProductsArray.push(productSelection);
+        localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
+    }
+    
+};
+
+// Use above function on click of add to cart button
+addToCartButton.addEventListener('click', addToCart);
