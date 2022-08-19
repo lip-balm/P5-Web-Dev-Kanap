@@ -28,6 +28,4 @@ function displayItems(product) {
         productLink.appendChild(productArticle);
         itemsSection.appendChild(productLink);
     }
-    let productArray = product[i];
-    return productArray;
 }
