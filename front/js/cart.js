@@ -105,116 +105,31 @@ for (let i = 0; i < currentCart.length; i++) {
 cartTotalQuantity.textContent = cartSum;
 cartTotalPrice.textContent = cartPrice.toLocaleString('fr-FR');
 
-
-//***** new testing code *****//
-
 // Modifications products in cart
 
-//stack overflow
-// const newQuantity = document.getElementsByClassName('itemQuantity');
-
-// Array.from(newQuantity).forEach(item => {
-//     item.addEventListener('change', () => {
-//         if (newQuantity.value <= 0) {
-//             alert('Sorry, zero or negative quantities are not allowed!');
-//         } else {
-//             currentCart.selectedQuantity = newQuantity.value;
-//             console.log(newQuantity);
-//             localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//             location.reload();
-//         }
-//     });
-// });
-
-
-// codegrepper
-// var newQuantity = document.getElementsByClassName('itemQuantity');
-
-// var modifyCartContents = function() {
-//     if (newQuantity.value <= 0){
-//         alert('Sorry, zero or negative quantities are not allowed!');
-//     } else {
-//         Number(currentCart.selectedQuantity) == Number(newQuantity.value);
-//         console.log(newQuantity);
-//         localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//         location.reload();
-// }};
-
-// for (var i = 0; i <newQuantity.length; i++) {
-//     newQuantity[i].addEventListener('change', modifyCartContents);
-// }
-
-// bobbyhadz queryselector
-// const newQuantity = document.querySelectorAll('.itemQuantity');
-
-// newQuantity.forEach(item => {
-//     item.addEventListener('change', function modifyCartContents() {
-//         if (newQuantity.value <= 0){
-//             alert('Sorry, zero or negative quantities are not allowed!');
-//         } else {
-//             currentCart.selectedQuantity = newQuantity.value;
-//             console.log(newQuantity);
-//             localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//     }});
-// });
-
-// bobbyhadz getelementsbyclass
 const newQuantity = Array.from(document.getElementsByClassName('itemQuantity'))
 
-newQuantity.forEach(item => {
+newQuantity.forEach((item, index) => {
     item.addEventListener('change', function modifyCartContents() {
-        if (newQuantity.value <= 0) {
-            alert('Sorry, zero or negative quantities are not allowed!');
+        const product = item.closest('article');
+        const quantity = product.getElementsByClassName('itemQuantity')[0].value;
+        if (quantity <= 0) {
+            alert('Sorry, zero or negative quantities are not allowed! Please use delete the item if you wish to remove it.');
+            location.reload();
         } else {
-            currentCart.selectedQuantity = newQuantity.value;
-            console.log(newQuantity);
-            localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
+            currentCart[index].selectedQuantity = quantity;
+            localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
+            location.reload();
         }
-    });
-});
+    });}); 
+
+// Removal of products in cart part 1
 
 
 
 
-//***** old testing code *****//
-
-// Modifications of products in cart version 1
-
-// let cartQuantity = document.getElementsByClassName('itemQuantity')
-// 
-// function modifyCartContents () {
-//     for (let i = 0; i < cartProductQuantityInput.length; i++) {
-//         let inputtedQuantity = cartProductQuantityInput[i];
-//         if (inputtedQuantity.value <= 0) {
-//             alert('Sorry, zero or negative quantities are not allowed!');
-//         } else {
-//             cartProductQuantityInput[i].selectedQuantity = inputtedQuantity.value;
-//             localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//         }
-//     }
-//     cartQuantity.addEventListener('change', modifyCartContents);
-// };
-
-// Modifications of products in cart version 2
-
-// function modifyCartContents () {
-//     for (let i = 0; i < cartProductQuantityInput.length; i++) {
-//         if (cartProductQuantityInput[i].value <= 0) {
-//             alert('Sorry, negative quantities are not allowed! Please use the Delete button if you would like to remove the item.');
-//         } else {
-//             currentCart[i].selectedQuantity = cartProductQuantityInput[i].value;
-//             localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//             console.log(cartProductsArray);
-//         }
-//     }
-// };
-
-// cartQuantity.addEventListener('change', modifyCartContents);
 
 
-
-
-// // Removal of products in cart part 1
 // let itemDelete = document.getElementsByClassName('deleteItem')[0];
 // console.log(itemDelete);
 
