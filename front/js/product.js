@@ -78,20 +78,24 @@ function addToCart() {
     console.log(existingProduct);
 
     // If cart is empty, add the product or if index is true, then increase the quantity.
-    if (cartProductsArray.length === 0) {
+    if (cartProductsArray.length === 0 && ((productColors.value != "") && (productQuantity.value != 0))) {
         cartProductsArray.push(productSelection);
         localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
         console.log(cartProductsArray);
 
-    } else if (existingProduct >= 0) {
+    } else if (existingProduct >= 0 && ((productColors.value != "") && (productQuantity.value != 0))) {
         cartProductsArray[existingProduct].selectedQuantity = Number(productSelection.selectedQuantity) + Number(cartProductsArray[existingProduct].selectedQuantity); 
         localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
         console.log(existingProduct);
 
     // If cart is not empty or product does not exist in cart, then add it to cart
-    } else {
+    } else if ((productColors.value != "") && (productQuantity.value != 0)) {
         cartProductsArray.push(productSelection);
         localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
+
+    // Show an alert if selection is invalid  
+    } else {
+        alert('You must make a valid selection for both color and quantity to add this item to cart!');
     }
 };
 

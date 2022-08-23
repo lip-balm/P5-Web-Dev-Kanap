@@ -105,7 +105,7 @@ for (let i = 0; i < currentCart.length; i++) {
 cartTotalQuantity.textContent = cartSum;
 cartTotalPrice.textContent = cartPrice.toLocaleString('fr-FR');
 
-// Modifications products in cart
+// Modifications of product quantities in cart
 
 const newQuantity = Array.from(document.getElementsByClassName('itemQuantity'))
 
@@ -113,8 +113,8 @@ newQuantity.forEach((item, index) => {
     item.addEventListener('change', function modifyCartContents() {
         const product = item.closest('article');
         const quantity = product.getElementsByClassName('itemQuantity')[0].value;
-        if (quantity <= 0) {
-            alert('Sorry, zero or negative quantities are not allowed! Please use delete the item if you wish to remove it.');
+        if (quantity <= 0 || quantity > 100) {
+            alert('Sorry, minimum quantity allowed is 1 and maximum is 100! Please use the delete option if you wish to remove this item.');
             location.reload();
         } else {
             currentCart[index].selectedQuantity = quantity;
@@ -123,53 +123,110 @@ newQuantity.forEach((item, index) => {
         }
     });}); 
 
-// Removal of products in cart part 1
+// Delete products in cart
 
+const itemDelete = Array.from(document.getElementsByClassName('deleteItem'));
 
+itemDelete.forEach((item, index) => {
+    item.addEventListener('click', function deleteCartItem() {
+        const itemToDelete = item.closest('article');
+        const itemToBeDeleted = itemToDelete.getElementsByClassName('deleteItem')[0];
+        itemToBeDeleted.remove();
 
+        currentCart.splice(index, 1);
+        localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
+        location.reload();
+        }
+)
+});
 
+// Confirming the order
+const firstName = document.getElementById('firstName');
+const firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+const lastName = document.getElementById('lastName');
+const lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+const address = document.getElementById('address');
+const addressErrorMsg = document.getElementById('addressErrorMsg');
+const city = document.getElementById('city');
+const cityErrorMsg = document.getElementById('cityErrorMsg');
+const email = document.getElementById('email');
+const emailErrorMsg = document.getElementById('emailErrorMsg');
+const orderButton = document.getElementById('order');
 
+let validFirstName= false;
+let validLastName = false;
+let validAddress = false;
+let validCity = false;
+let validEmail = false;
 
-// let itemDelete = document.getElementsByClassName('deleteItem')[0];
-// console.log(itemDelete);
+// Validate name
+var regName = /^[0-9A-Za-z\s\-']+$/;
 
-// function deleteCartItem () {
-//     for (let i = 0; i < currentCart.length; i++) {
-//         let itemtoRemove = cartItems.closest('article')[i];
-//         console.log(itemtoRemove);
+firstName.addEventListener("blur", () => {
+    if (regName.test(firstName.value)) {
+        firstNameErrorMsg.textContent = 'Great name!';
+        firstNameErrorMsg.style.color = 'lightgreen';
+        validFirstName = true;
+    } else {
+        firstNameErrorMsg.textContent = 'Please input a valid name.';
+        firstNameErrorMsg.style.color = 'pink';
+    }
+    console.log(validFirstName);
+});
 
-//         const unwantedProduct = cartProductsArray.findIndex(thisProduct => thisProduct.pageID == itemtoRemove.dataset.id && thisProduct.selectedColor == itemtoRemove.dataset.color);
-//         console.log(unwantedProduct);
-        
-//         // localStorage.removeItem();
-//         localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//         location.reload();
-//     }
-// };
+lastName.addEventListener("blur", () => {
+    if (regName.test(lastName.value)) {
+        lastNameErrorMsg.textContent = 'Great name!';
+        lastNameErrorMsg.style.color = 'lightgreen';
+        validLastName = true;
+    } else {
+        lastNameErrorMsg.textContent = 'Please input a valid name.';
+        lastNameErrorMsg.style.color = 'pink';
+    }
+    console.log(validLastName);
+});
 
-// itemDelete.addEventListener('click', deleteCartItem);
+// Validate addres
+var regAddress = /^\s*\S+(?:\s+\S+){2}/;
+var regCity = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/g;
 
-// Removal of products in cart part 2
-// let itemDelete = document.getElementsByClassName('deleteItem');
+address.addEventListener("blur", () => {
+    if (regAddress.test(address.value)) {
+        addressErrorMsg.textContent = 'Your order will be sent here!';
+        addressErrorMsg.style.color = 'lightgreen';
+        validAddress = true;
+    } else {
+        addressErrorMsg.textContent = 'Please double check your address.';
+        addressErrorMsg.style.color = 'pink';
+    }
+    console.log(validAddress);
+});
 
-// itemDelete.addEventListener('click', () => {
-//     const itemToDelete = cartProductsArray.findIndex((unwantedProduct) => unwantedProduct.pageID == currentCart.dataset.id && unwantedProduct.selectedColor == currentCart.dataset.color);
-//     console.log(itemToDelete)
+city.addEventListener("blur", () => {
+    if (regCity.test(city.value)) {
+        cityErrorMsg.textContent = 'Great city!';
+        cityErrorMsg.style.color = 'lightgreen';
+        validCity = true;
+    } else {
+        cityErrorMsg.textContent = 'Please double check your city';
+        cityErrorMsg.style.color = 'pink';
+    }
+    console.log(validCity);
+});
 
-//     localStorage.setItem('cartProductsArray', JSON.stringify(cartProductsArray));
-//     location.reload();
-// });
+// Validate email
+var regEmail = /\S+@\S+\.\S+/g;
 
-// function deleteCartItem () {
-//     for (let i = 0; i < cartProductsDeleteItem.length; i++) {
-//         let itemtoRemove = cartProductsDeleteItem.closest('article');
+email.addEventListener("blur", () => {
+    if (regEmail.test(email.value)) {
+        emailErrorMsg.textContent = 'Order confirmation and updates coming shortly!';
+        emailErrorMsg.style.color = 'lightgreen';
+        validEmail = true;
+    } else {
+        emailErrorMsg.textContent = 'Please input a valid email.';
+        emailErrorMsg.style.color = 'pink';
+    }
+    console.log(validLastName);
+});
 
-
-//         console.log(unwantedProduct);
-        
-//         localStorage.removeItem(itemtoRemove);
-
-//     }
-
-// };
-
+// 
