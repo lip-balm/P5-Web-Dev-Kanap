@@ -164,7 +164,7 @@ var regName = /^[0-9A-Za-z\s\-']+$/;
 
 firstName.addEventListener("blur", () => {
     if (regName.test(firstName.value)) {
-        firstNameErrorMsg.textContent = 'Great name!';
+        firstNameErrorMsg.textContent = 'Great name :)';
         firstNameErrorMsg.style.color = 'lightgreen';
         validFirstName = true;
     } else {
@@ -176,7 +176,7 @@ firstName.addEventListener("blur", () => {
 
 lastName.addEventListener("blur", () => {
     if (regName.test(lastName.value)) {
-        lastNameErrorMsg.textContent = 'Great name!';
+        lastNameErrorMsg.textContent = 'Cool!';
         lastNameErrorMsg.style.color = 'lightgreen';
         validLastName = true;
     } else {
@@ -226,7 +226,31 @@ email.addEventListener("blur", () => {
         emailErrorMsg.textContent = 'Please input a valid email.';
         emailErrorMsg.style.color = 'pink';
     }
-    console.log(validLastName);
+    console.log(validEmail);
 });
 
-// 
+// Order form
+let orderContact = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    address: address.value,
+    city: city.value,
+    email: email.value,
+};
+
+orderButton.addEventListener('click', (event) => {
+    if ((validFirstName && validLastName && validAddress && validCity && validEmail) && (currentCart.length != 0)) {
+        fetch('http://localhost:3000/api/products', {
+            method: 'POST',
+            headers: {
+                Accept: 'application.json',
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(orderContact, currentCart),
+        })
+        localStorage.clear();
+    } else {
+        alert('Something is wrong! Please review your information or cart contents. You may also contact us for assistance.');
+        event.preventDefault();
+    }
+})
