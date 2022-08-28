@@ -162,7 +162,7 @@ let validEmail = false;
 // Validate name
 var regName = /^[0-9A-Za-z\s\-']+$/;
 
-firstName.addEventListener("blur", () => {
+firstName.addEventListener('blur', () => {
     if (regName.test(firstName.value)) {
         firstNameErrorMsg.textContent = 'Great name :)';
         firstNameErrorMsg.style.color = 'lightgreen';
@@ -174,7 +174,7 @@ firstName.addEventListener("blur", () => {
     console.log(validFirstName);
 });
 
-lastName.addEventListener("blur", () => {
+lastName.addEventListener('blur', () => {
     if (regName.test(lastName.value)) {
         lastNameErrorMsg.textContent = 'Cool!';
         lastNameErrorMsg.style.color = 'lightgreen';
@@ -190,7 +190,7 @@ lastName.addEventListener("blur", () => {
 var regAddress = /^\s*\S+(?:\s+\S+){2}/;
 var regCity = /(^|\s)[a-zA-Z',.-\s]{1,25}(?=\s|$)((?!\W)[a-zA-Z',.-\s]{1,25}(?=\s|$))?/g;
 
-address.addEventListener("blur", () => {
+address.addEventListener('blur', () => {
     if (regAddress.test(address.value)) {
         addressErrorMsg.textContent = 'Your order will be sent here!';
         addressErrorMsg.style.color = 'lightgreen';
@@ -202,7 +202,7 @@ address.addEventListener("blur", () => {
     console.log(validAddress);
 });
 
-city.addEventListener("blur", () => {
+city.addEventListener('blur', () => {
     if (regCity.test(city.value)) {
         cityErrorMsg.textContent = 'Great city!';
         cityErrorMsg.style.color = 'lightgreen';
@@ -217,7 +217,7 @@ city.addEventListener("blur", () => {
 // Validate email
 var regEmail = /\S+@\S+\.\S+/g;
 
-email.addEventListener("blur", () => {
+email.addEventListener("change", () => {
     if (regEmail.test(email.value)) {
         emailErrorMsg.textContent = 'Order confirmation and updates coming shortly!';
         emailErrorMsg.style.color = 'lightgreen';
@@ -229,26 +229,42 @@ email.addEventListener("blur", () => {
     console.log(validEmail);
 });
 
-// Order form
-let orderContact = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    address: address.value,
-    city: city.value,
-    email: email.value,
-};
-
+// Order confirmation
 orderButton.addEventListener('click', (event) => {
     if ((validFirstName && validLastName && validAddress && validCity && validEmail) && (currentCart.length != 0)) {
-        fetch('http://localhost:3000/api/products', {
+        event.preventDefault();
+
+        let contact = {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            address: address.value,
+            city: city.value,
+            email: email.value,
+        };
+
+        let products = [];
+        currentCart.forEach(pageID => products.push(pageID.pageID));
+
+        let order = {
+            contact,
+            products,
+        };
+
+        console.log(JSON.stringify({contact: contact, products: products}));
+
+        fetch('http://localhost:3000/api/products/order', {
             method: 'POST',
             headers: {
-                Accept: 'application.json',
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify(orderContact, currentCart),
+            body: JSON.stringify(order),
         })
-        localStorage.clear();
+        // .then(response => console.log(response.json())).catch(error => console.log(error))
+        .then(response => response.json())
+        .then(data => {
+            sessionStorage.setItem('orderId', data.orderId)
+            window.location.href = "confirmation.html" + "?id=" + data.orderId;
+        });
     } else {
         alert('Something is wrong! Please review your information or cart contents. You may also contact us for assistance.');
         event.preventDefault();
