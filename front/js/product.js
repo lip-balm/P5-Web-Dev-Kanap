@@ -20,7 +20,6 @@ const productColors = document.getElementById('colors');
 const productQuantity = document.getElementById('quantity');
 const addToCartButton = document.getElementById('addToCart');
 
-
 // Content each product page with its respective information
 function contentProductPages(product) {
     for (let i = 0; i < product.length; i++) {

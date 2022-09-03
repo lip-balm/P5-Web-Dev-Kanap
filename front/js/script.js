@@ -21,7 +21,6 @@ function displayItems(product) {
         productHeading.textContent = product[i].name;
         productDescription.textContent = product[i].description;
         
-        // Append children to their respective parents
         productArticle.appendChild(productImage);
         productArticle.appendChild(productHeading);
         productArticle.appendChild(productDescription);

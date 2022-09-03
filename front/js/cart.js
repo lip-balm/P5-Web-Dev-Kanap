@@ -106,7 +106,6 @@ cartTotalQuantity.textContent = cartSum;
 cartTotalPrice.textContent = cartPrice.toLocaleString('fr-FR');
 
 // Modifications of product quantities in cart
-
 const newQuantity = Array.from(document.getElementsByClassName('itemQuantity'))
 
 newQuantity.forEach((item, index) => {
@@ -124,7 +123,6 @@ newQuantity.forEach((item, index) => {
     });}); 
 
 // Delete products in cart
-
 const itemDelete = Array.from(document.getElementsByClassName('deleteItem'));
 
 itemDelete.forEach((item, index) => {
