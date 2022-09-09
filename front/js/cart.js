@@ -86,6 +86,7 @@ function displayCart(data) {
         cartProductsDeleteItem.className = 'deleteItem';
         cartProductsDeleteItem.textContent = 'Delete';
 
+        // Delete items from cart
         cartProductsDeleteItem.addEventListener('click', function deleteCartItem() {
             const itemToDelete = cartProductsDeleteItem.closest('article');
             const itemToBeDeleted = itemToDelete.getElementsByClassName('deleteItem')[0];
