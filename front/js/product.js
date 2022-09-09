@@ -59,7 +59,7 @@ function addToCart() {
         pageID: pageID,
         selectedQuantity: productQuantity.value,
         selectedColor: productColors.value,
-        productPrice: productPrice.textContent,
+        // productPrice: productPrice.textContent,
         productImage: productPageImage,
     };
     console.log(productSelection);

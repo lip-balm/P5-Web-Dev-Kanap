@@ -2,13 +2,27 @@
 const cartItems = document.getElementById('cart__items');
 let currentCart = JSON.parse(localStorage.getItem('cartProductsArray'));
 
+fetch('http://localhost:3000/api/products')
+.then(response => response.json())
+.then(data => displayCart(data));
+
 // Function to actually show the array
-if (currentCart == null) {
-    let emptyCartMessage = document.createElement('p');
-    emptyCartMessage.innerText = 'Your cart is empty!';
-    cartItems.appendChild(emptyCartMessage);
-} else {
-    for (let i in currentCart) {
+function displayCart(data) {
+    if (currentCart == null) {
+        let emptyCartMessage = document.createElement('p');
+        emptyCartMessage.innerText = 'Your cart is empty!';
+        cartItems.appendChild(emptyCartMessage);
+    } else {
+        let cartPrice = 0;
+
+        for (let i in currentCart) {
+            const productData = data.find(x => x._id === currentCart[i].pageID);
+            // console.log('Product Data', productData);
+            // console.log('Price', productData.price);
+            // console.log('name', productData.name);
+
+            cartPrice += Number(productData.price) * Number(currentCart[i].selectedQuantity); 
+
         // Create article for the cart item section
         let cartProductsArticle = document.createElement('article');
         cartProductsArticle.className = 'cart__item';
@@ -37,7 +51,7 @@ if (currentCart == null) {
 
         cartProductName.textContent = currentCart[i].productTitle;
         cartProductColor.textContent = currentCart[i].selectedColor;
-        cartProductPrice.textContent = '€' + Number(currentCart[i].productPrice);
+        cartProductPrice.textContent = '€' + Number(productData.price);
         
         cartProductsDescription.appendChild(cartProductName);
         cartProductsDescription.appendChild(cartProductColor);
@@ -60,6 +74,8 @@ if (currentCart == null) {
         cartProductQuantityInput.setAttribute('max', 100);
         cartProductQuantityInput.setAttribute('value', currentCart[i].selectedQuantity);
 
+        cartProductQuantityInput.addEventListener('change', modifyCartContents);
+
         cartProductQuantity.appendChild(cartProductQuantityLabel);
         cartProductQuantity.appendChild(cartProductQuantityInput);
 
@@ -69,6 +85,15 @@ if (currentCart == null) {
         let cartProductsDeleteItem = document.createElement('p');
         cartProductsDeleteItem.className = 'deleteItem';
         cartProductsDeleteItem.textContent = 'Delete';
+
+        cartProductsDeleteItem.addEventListener('click', function deleteCartItem() {
+            const itemToDelete = cartProductsDeleteItem.closest('article');
+            const itemToBeDeleted = itemToDelete.getElementsByClassName('deleteItem')[0];
+            itemToBeDeleted.remove();
+    
+            currentCart.splice(i, 1);
+            localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
+            location.reload()});
 
         cartProductsDelete.appendChild(cartProductsDeleteItem);
         
@@ -85,6 +110,8 @@ if (currentCart == null) {
 
         cartItems.appendChild(cartProductsArticle);
     }
+    cartTotalPrice.textContent = cartPrice.toLocaleString('fr-FR');    
+}
 };
 
 // Get access to DOM elements for the summary and display total price + quantity
@@ -97,46 +124,40 @@ for (let i = 0; i < currentCart.length; i++) {
     cartSum += Number(currentCart[i].selectedQuantity);
 };
 
-let cartPrice = 0;
-for (let i = 0; i < currentCart.length; i++) {
-    cartPrice += Number(currentCart[i].productPrice) * Number(currentCart[i].selectedQuantity); 
-};
-
 cartTotalQuantity.textContent = cartSum;
-cartTotalPrice.textContent = cartPrice.toLocaleString('fr-FR');
 
 // Modifications of product quantities in cart
-const newQuantity = Array.from(document.getElementsByClassName('itemQuantity'))
+function modifyCartContents() {
+    const newQuantity = Array.from(document.getElementsByClassName('itemQuantity'))
 
-newQuantity.forEach((item, index) => {
-    item.addEventListener('change', function modifyCartContents() {
-        const product = item.closest('article');
-        const quantity = product.getElementsByClassName('itemQuantity')[0].value;
-        if (quantity <= 0 || quantity > 100) {
-            alert('Sorry, minimum quantity allowed is 1 and maximum is 100! Please use the delete option if you wish to remove this item.');
-            location.reload();
-        } else {
-            currentCart[index].selectedQuantity = quantity;
-            localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
-            location.reload();
-        }
-    });}); 
+    newQuantity.forEach((item, index) => {
+            const product = item.closest('article');
+            const quantity = product.getElementsByClassName('itemQuantity')[0].value;
+            if (quantity <= 0 || quantity > 100) {
+                alert('Sorry, minimum quantity allowed is 1 and maximum is 100! Please use the delete option if you wish to remove this item.');
+                location.reload();
+            } else {
+                currentCart[index].selectedQuantity = quantity;
+                localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
+                location.reload();
+            }
+        });
+};
 
 // Delete products in cart
-const itemDelete = Array.from(document.getElementsByClassName('deleteItem'));
+// function deleteCartItem() {
+//     const itemDelete = Array.from(document.getElementsByClassName('deleteItem'));
 
-itemDelete.forEach((item, index) => {
-    item.addEventListener('click', function deleteCartItem() {
-        const itemToDelete = item.closest('article');
-        const itemToBeDeleted = itemToDelete.getElementsByClassName('deleteItem')[0];
-        itemToBeDeleted.remove();
+//     itemDelete.forEach((item, index) => {
+//         const itemToDelete = item.closest('article');
+//         const itemToBeDeleted = itemToDelete.getElementsByClassName('deleteItem')[0];
+//         itemToBeDeleted.remove();
 
-        currentCart.splice(index, 1);
-        localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
-        location.reload();
-        }
-)
-});
+//         currentCart.splice(index, 1);
+//         localStorage.setItem('cartProductsArray', JSON.stringify(currentCart));
+//         location.reload();
+//     })
+// };
 
 // Confirming the order
 const firstName = document.getElementById('firstName');
